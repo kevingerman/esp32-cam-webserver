@@ -175,6 +175,9 @@ void serialDump() {
 }
 
 static esp_err_t capture_handler(httpd_req_t *req){
+    // capture all possible inputs and add as meta data on the image file.  temp, humidity, light
+    // sensors should be capturing 
+
     camera_fb_t * fb = NULL;
     esp_err_t res = ESP_OK;
 

@@ -775,6 +775,7 @@ void setup() {
         Serial.println("No lamp, or lamp disabled in config");
     }
 
+    // @TODO: Camera server and bus driver (kramden) should be bound to seperate cores.
     // Start the camera server
     startCameraServer(httpPort, streamPort);
 
@@ -793,6 +794,20 @@ void setup() {
 
     // Info line; use for Info messages; eg 'This is a Beta!' warnings, etc. as necesscary
     // Serial.print("\r\nThis is the 4.1 beta\r\n");
+
+    // INITIALIZE I2C BUS
+    /* 
+     * Read device config from stored settings
+     * Discover devices (device config should have a driver module name associated with 
+     *                   known addresses - see i2c_devices.h for list)
+     * There is an http_handler for devices that takes the device name found in the config 
+     * or its default name from i2c_devices.h and interacts with the device through the device_call func
+     * which takes the device address give by the handler read from the structure loaded from teh config
+     * and paired with the list of devices from the discovery
+     * 
+     * Each mapped device then gets registered with the UI and is available as a display toggle.
+     * Ultimately want to be able to add LUA code blocks in rules for devices 
+     */
 
     // As a final init step chomp out the serial buffer in case we have recieved mis-keys or garbage during startup
     while (Serial.available()) Serial.read();

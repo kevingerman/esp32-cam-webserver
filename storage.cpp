@@ -62,6 +62,11 @@ void dumpPrefs(fs::FS &fs){
 }
 
 void loadPrefs(fs::FS &fs){
+  /* @TODO: consider replacing json with protocol buffers - can we have that cross platform 
+            so that config files can be manipulated off device
+            also include integrity check and security signing trust features - trust providers 
+      SEE: https://techtutorialsx.com/2018/10/19/esp32-esp8266-arduino-protocol-buffers/
+   */
   if (fs.exists(PREFERENCES_FILE)) {
     // read file into a string
     String prefs;
@@ -73,6 +78,7 @@ void loadPrefs(fs::FS &fs){
       return;
     }
     size_t size = file.size();
+    // @TODO: Use a CRC or hash to vaidate file is not corrupt allowing for dyanmic config
     if (size > PREFERENCES_MAX_SIZE) {
       Serial.println("Preferences file size is too large, maybe corrupt, removing");
       removePrefs(SPIFFS);
@@ -127,6 +133,11 @@ void loadPrefs(fs::FS &fs){
     s->set_hmirror(s, jsonExtract(prefs, "hmirror").toInt());
     s->set_dcw(s, jsonExtract(prefs, "dcw").toInt());
     s->set_colorbar(s, jsonExtract(prefs, "colorbar").toInt());
+
+    /* @TODO: load device bus preferences - json config has an 
+              optional section 'device_bus' containing a map of 
+              device_name to device_t serialization
+    */
     // close the file
     file.close();
     dumpPrefs(SPIFFS);
